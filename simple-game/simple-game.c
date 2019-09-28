@@ -1,7 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<time.h>
-#include<windows.h>
 #define you (0)
 #define me (1)
 #define true (1)
@@ -13,13 +12,13 @@ printf("%3s:", #someone);\
 for(int i=1;i<=(blood_list)[someone];i=i+1){\
 	printf("_");\
 }\
-printf("\n");
+printf("%d\n",(blood_list)[someone]);
 #define print_card(card_list,id) \
 printf("%2d:",id);\
 for(int j=1;j<=(card_list)[id][power];j=j+1){\
 	printf("_");\
 }\
-printf("\n");
+printf("%d\n",-(card_list)[id][power]);
 #define print_all(blood_list,card_list) \
 system("cls");\
 print_blood(blood_list,me);\
