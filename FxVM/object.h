@@ -20,17 +20,37 @@ class object{
     object(){
       this->val=new __object;
     }
+    ~object(){
+      delete this->val;
+    }
     std::string type(){
       return this->val->type();
     }
     object calc(std::string _operator){
       this->val=this->val->calc(_operator);
+      return *this;
     }
     object calc(std::string _operator,object another){
-      if(this->type()==another.type()){
-        return this->val->calc(_operator,another.val);
+      this->val=this->val->calc(_operator,another.val);
+      return *this;
+    }
+}
+class _num:__object{
+  private:
+    long double val;
+  public:
+    std::string type(){
+      return "_num";
+    }
+    __object * calc(std::string _operator){
+      if(_operator=="-"){
+        this->val=-(this->val);
+        return this;
+      }else if(_opertor=="?"){
+        return make__bool(true);
       }else{
-        return make_err("Undefined!!!");
+        return make_err("Undefined operator for _num");
       }
     }
 }
+        
