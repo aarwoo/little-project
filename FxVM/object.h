@@ -42,15 +42,31 @@ class _num:__object{
     std::string type(){
       return "_num";
     }
+    _num * setval(long double val){
+      this->val=val;
+      return this;
+    }
     __object * calc(std::string _operator){
       if(_operator=="-"){
         this->val=-(this->val);
         return this;
       }else if(_opertor=="?"){
-        return make__bool(true);
+        return (new _bool).setval(true);
       }else{
-        return make_err("Undefined operator for _num");
+        return (new _err).setval("Undefined operator for _num");
       }
     }
+    __object * calc(std::string _operator,__object * another){
+      _num * tmp=dynamic_cast<_num *>(another);
+      if(tmp!=nullptr){
+        if(_operator=="^"){
+          return (new _num).setval(pow(this->val,tmp->val));
+        }else if(_operator=="*"){
+          return (new _num).setval(this->val*(tmp->val));
+        }else if(_operator=="/"){
+          return (new _num).setval(this->val/(tmp->val));
+        }else if(_operator=="+"){
+          return (new _num).setval(this->val+(tmp->val));
+        }else if
 }
         
