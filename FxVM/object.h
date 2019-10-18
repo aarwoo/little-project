@@ -4,7 +4,7 @@
 class __object{
   public:
     virtual std::string type(){
-      return "This object's type is undefined.";
+      return "?";
     }
     virtual __object * calc(std::string _operator){
       return this;
@@ -53,7 +53,7 @@ class _num:__object{
       }else if(_opertor=="?"){
         return (new _bool).setval(true);
       }else{
-        return (new _err).setval("Undefined operator for _num");
+        return (new _err).setval(_operator+this->type()+" is underfined.");
       }
     }
     __object * calc(std::string _operator,__object * another){
@@ -67,6 +67,13 @@ class _num:__object{
           return (new _num).setval(this->val/(tmp->val));
         }else if(_operator=="+"){
           return (new _num).setval(this->val+(tmp->val));
-        }else if
+        }else if(_operator=="<"){
+          return (new _num).setval(this->val<(tmp->val));
+        }else{
+          return (new _err).setval(this->type()+_operator+tmp->type()+" is undefined.");
+        }
+      }else{
+        return (new _err).setval(this->type()+_operator+tmp->type()+" is unefined.");
+      }
 }
         
