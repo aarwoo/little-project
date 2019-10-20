@@ -1,42 +1,39 @@
 #ifndef expression_h
 #define expression_h
 #include"object.h"
-#include"generator.h"
+class __expression{
+  public:
+    virtual ~__expression(){
+      /*PASS*/
+    }
+    virtual bool empty(){
+      return true;
+    }
+    virtual std::string tostr(){
+      return "";
+    }
+    virtual object eval(std::unordered_map<std::string,object> map){
+      return *(new object);
+    }
+}
 class expression{
   private:
-    std::string _operator;
-    generator gen;
-    object val;
-    expression * l_subexpr;
-    expression * r_subexpr;
+    __expression * expr;
   public:
     expression(){
-      this->l_subexpr=nullptr;
-      this->r_subexpr=nullptr;
+      this->expr=new __expression;
     }
     ~expression(){
-      delete this->l_subexpr;
-      delete this->r_subexpr;
+      delete this->expr;
     }
     bool empty(){
-      return this->_operator==""&&this->gen.empty()==true&&this->val.type()=="?"&&this->l_subexpr==nullptr&&this->r_subexpr==nullptr;
-    }
-    expression setval(std::string src_expr){
-      
+      return this->expr->empty();
     }
     std::string tostr(){
-      if(this->l_subexpr==nullptr){
-        if(this->r_subexpr==nullptr){
-          return this->gen.tostr()+this->val.tostr();
-        }else{
-          return "("+this->_operator+this->r_subexpr->tostr()+")";
-        }
-      }else{
-        return "("+this->l_subexpr->tostr()+this->_operator+this->r_subexpr->tostr()+")";
-      }
+      return this->expr->tostr();
     }
     object eval(std::unordered_map<std::string,object> map){
-      
+      return this->expr->eval(map);
     }
 }
 #endif
