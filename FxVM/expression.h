@@ -36,4 +36,33 @@ class expression{
       return this->expr->eval(map);
     }
 }
+class var_expr: public __expression{
+  private:
+    std::string var;
+  public:
+    var_expr * setval(std::string var){
+      this->var=var;
+      return this;
+    }
+    bool empty(){
+      return this->var!="";
+    }
+    std::string tostr(){
+      return this->var;
+    }
+    object eval(std::unordered_map<std::string,object> map){
+      if(map.count(this->var)==1){
+        return map[this->var];
+      }else{
+        return global_var(this->var);
+      }
+    }
+}
+class func_call_expr: public __expression{
+  private:
+    expression f;
+    std::vector<expression>arg;
+  public:
+    
+}
 #endif
