@@ -50,7 +50,7 @@ class object{
     }
 }
 #include"expression.h"
-class _err:__object{
+class _err: public __object{
   private:
     std::string val;
   public:
@@ -86,7 +86,7 @@ class _err:__object{
       }
     }
 }
-class _bool:__object{
+class _bool: pubilc __object{
   private:
     bool val;
   public:
@@ -130,7 +130,7 @@ class _bool:__object{
       }
     }
 }
-class _str:__object{
+class _str: public __object{
   private:
     std::string val;
   public:
@@ -166,7 +166,7 @@ class _str:__object{
       }
     }
 }
-class _num:__object{
+class _num: public __object{
   private:
     long double val;
   public:
@@ -212,7 +212,7 @@ class _num:__object{
       }
     }
 }
-class _func:__object{
+class _func: public __object{
   private:
     std::vector<std::string> argument_var;
     std::vector<pair<expression,expression> > expr;
