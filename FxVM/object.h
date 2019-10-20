@@ -7,6 +7,9 @@ class _err;
 class _bool;
 class __object{
   public:
+    virtual ~__object(){
+      /*PASS*/
+    }
     virtual std::string type(){
       return "?";
     }
