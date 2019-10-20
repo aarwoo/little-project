@@ -1,3 +1,5 @@
+#ifndef object_h
+#define object_h
 #include<vector>
 #include<unordered_map>
 #include<string>
@@ -47,6 +49,7 @@ class object{
       return *this;
     }
 }
+#include"expression.h"
 class _err:__object{
   private:
     std::string val;
@@ -270,3 +273,4 @@ class _func:__object{
       }
     }
 }
+#endif
