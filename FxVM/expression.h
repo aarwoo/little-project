@@ -18,10 +18,16 @@ class expression{
       delete this->r_subexpr;
     }
     bool empty(){
-      return this->_operator==""&&this->id==""&&this->val.type()=="?"&&this->l_subexpr==nullptr&&this->r_subexpr==nullptr&&
+      return this->_operator==""&&this->id==""&&this->val.type()=="?"&&this->l_subexpr==nullptr&&this->r_subexpr==nullptr;
     }
     std::string tostr(){
-      
+      if(this->l_subexpr==nullptr){
+        if(this->r_subexpr==nullptr){
+          if(this->_operator==""){
+            return this->id+val.tostr();
+          }else{
+            return "("+this->_operator+this->id+val.tostr+")";
+          }
     }
     object eval(std::unordered_map<std::string,object> map){
       
