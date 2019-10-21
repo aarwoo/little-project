@@ -3,8 +3,6 @@
 #include<vector>
 #include<unordered_map>
 #include<string>
-class _err;
-class _bool;
 class __object{
   public:
     virtual ~__object(){
@@ -16,12 +14,8 @@ class __object{
     virtual std::string tostr(){
       return "";
     }
-    virtual __object * calc(std::string _operator){
-      return (new _err)->setval(_operator+this->type()+" is undefined.");
-    }
-    virtual __object * calc(std::string _operator,__object * another){
-      return (new _err)->setval(this->type()+_operator+another->type()+" is undefined.");
-    }
+    virtual __object * calc(std::string _operator);
+    virtual __object * calc(std::string _operator,__object * another);
 }
 class object{
   private:
@@ -51,6 +45,40 @@ class object{
     }
 }
 #include"expression.h"
+class _bool: public __object{
+  private:
+    bool val;
+  public:
+    std::string type(){
+      return "_bool";
+    }
+    _bool * setval(bool val){
+      this->val=val;
+      return this;
+    }
+    __object * calc(std::string _operator){
+      if(_operator=="-"){
+        return (new _bool)->setval(!this->val);
+      }else if(_operator=="?"){
+        return (new _bool)->setval(true);
+      }else{
+        return (new _bool)->setval(this->val);
+      }
+    }
+    __object * calc(std::string _operator,__object * another){
+      _bool * tmp=dynamic_cast<_bool *>(another);
+      if(tmp!=nullptr){
+        if(_operator=="\\/"){
+          return (new _bool)->setval(this->val||tmp->val);
+        }else if(_operator=="/\\"){
+          return (new _bool)->setval(this->val&&tmp->val);
+        }else{
+          return (new _bool)->setval(this->val);
+        }
+      }else{
+        return this->calc(_operator,(new _bool)->setval(false));
+      }
+}
 class _err: public __object{
   private:
     std::string val;
@@ -84,50 +112,6 @@ class _err: public __object{
         }
       }else{
         return this->calc("+",(new _err)->setval(this->type()+_operator+tmp->type()+" is underfined.");
-      }
-    }
-}
-class _bool: pubilc __object{
-  private:
-    bool val;
-  public:
-    std::string type(){
-      return "_bool";
-    }
-    std::string tostr(){
-      if(this->val==true){
-        return "_true";
-      else{
-        return "_false";
-      }
-    }
-    _bool * setval(bool val){
-      this->val=val;
-      return this;
-    }
-    __object * calc(std::string _operator){
-      if(_operator=="-"){
-        return (new _bool)->setval(!(this->val));
-      }else if(_operator=="?"){
-        return (new _bool)->setval(true);
-      }else{
-        return (new _err)->setval(_operator+this->type()+" is undefined.");
-      }
-    }
-    __object * calc(std::string _operator,__object * another){
-      _bool * tmp=dynamic_cast<_bool *>(another);
-      if(tmp!=nullptr){
-        if(_operator=="="){
-          return (new _bool)->setval(this->val==tmp->val);
-        }else if(_operator=="/\"){
-          return (new _bool)->setval(this->val&&tmp->val);
-        }else if(_operator=="\/"){
-          return (new _bool)->setval(this->val||tmp->val);
-        }else{
-          return (new _err)->setval(this->type()+_operator+tmp->type()+" is underfined.");
-        }
-      }else{
-        return (new _err)->setval(this->type()+_operator+tmp->type()+" is undefined.");
       }
     }
 }
