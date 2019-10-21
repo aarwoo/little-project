@@ -63,6 +63,18 @@ class func_call_expr: public __expression{
     expression f;
     std::vector<expression>arg;
   public:
-    
+    bool empty(){
+      return this->f.empty()&&this->arg.size()>0;
+    }
+    std::string tostr(){
+      std::string tmp;
+      size_t i;
+      tmp=this->f.tostr()+"(";
+      for(i=0;i<this->arg.size()-1;i=i+1){
+        tmp=tmp+(this->arg)[i].tostr()+",";
+      }
+      tmp=tmp+(this->arg)[i].tostr()+")";
+      return tmp;
+    }
 }
 #endif
