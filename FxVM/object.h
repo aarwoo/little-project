@@ -44,12 +44,10 @@ class object{
       this->val=val;
     }
     object calc(std::string _operator){
-      this->val=this->val->calc(_operator);
-      return *this;
+      return (new object)->setval(this->val->calc(_operator));
     }
     object calc(std::string _operator,object another){
-      this->val=this->val->calc(_operator,another.val);
-      return *this;
+      return (new object)->setval(this->val->calc(_operator,another.val));
     }
 }
 #include"expression.h"
