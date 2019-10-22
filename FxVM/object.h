@@ -59,8 +59,6 @@ class _bool: public __object{
     __object * calc(std::string _operator){
       if(_operator=="-"){
         return (new _bool)->setval(!this->val);
-      }else if(_operator=="?"){
-        return (new _bool)->setval(true);
       }else{
         return (new _bool)->setval(this->val);
       }
@@ -94,11 +92,7 @@ class _err: public __object{
       return this;
     }
     __object * calc(std::string _operator){
-      if(_operator=="?"){
-        return (new _bool)->setval(true);
-      }else{
-        return (new _err)->setval(_operator+this->type()+" is underfined.");
-      }
+        return this->calc("+",(new _err)->setval(_operator+this->type()+" is underfined."));
     }
     __object * calc(std::string _operator,__object * another){
       _err * tmp=dynamic_cast<_err *>(another);
@@ -130,11 +124,7 @@ class _str: public __object{
       return this;
     }
     __object * calc(std::string _operator){
-      if(_operator=="?"){
-        return (new _bool)->setval(true);
-      }else{
         return (new _err)->setval(_operator+this->type()+" is underfined.");
-      }
     }
     __object * calc(std::string _operator,__object * another){
       _str * tmp=dynamic_cast<_str *>(another);
@@ -170,8 +160,6 @@ class _num: public __object{
     __object * calc(std::string _operator){
       if(_operator=="-"){
         return (new _num)->setval(-(this->val));
-      }else if(_opertor=="?"){
-        return (new _bool)->setval(true);
       }else{
         return (new _err)->setval(_operator+this->type()+" is underfined.");
       }
