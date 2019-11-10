@@ -1,4 +1,3 @@
-/*Just For Windows*/
 #ifndef UNICODE
 #define UNICODE
 #endif
@@ -8,12 +7,13 @@
 #include<math.h>
 #include<time.h>
 #define class_name (L"Window")
-#define title (L"new game  1.0")
+#define title (L"new game  2.0")
 #define base_rate (0.01)
 #define base_mark (0.05)
 #define begin_mark (0.5)
 #define mov_rate (base_rate)
-#define me_mov_rate (mov_rate*1.2)
+#define food_mov_rate (mov_rate*1.2)
+#define me_mov_rate (mov_rate*1.1)
 #define enemy_mov_rate (mov_rate)
 #define size_rate (base_rate*3)
 #define blood_width_rate (base_rate*2.5)
@@ -35,7 +35,10 @@
 #define info_win (L"WIN!!!")
 #define info_lose (L"LOSE!!!")
 #define vertical_spacing_info (size_rate+0.1)
+#define info_x_rate (0.1)
+#define info_y_rate (0.5)
 #define exit_pause_ms (5000)
+#define info_max_length (95)
 typedef struct{
 	double x_rate;
 	double y_rate;
@@ -95,10 +98,13 @@ void paint_rect(HDC hdc,RECT rt,COLORREF color){
 	DeleteObject((HGDIOBJ)(hbr));
 	return;
 }
-void paint_text(HDC hdc,RECT rt,wchar_t * str,COLORREF color__text,COLORREF color__text__background,UINT format){
+void paint_text(HDC hdc,RECT rt,wchar_t * str,
+				COLORREF color__text,COLORREF color__text__background,UINT format,size_t single_line_text_length){
 	SetTextColor(hdc,color__text);
 	SetBkColor(hdc,color__text__background);
-	HFONT hft=CreateFont((rt.bottom-rt.top),0,0,0,0&FW_BOLD,
+	HFONT hft=CreateFont((rt.bottom-rt.top),
+	   					 (single_line_text_length==0)?(0):((rt.right-rt.left)/single_line_text_length),
+						 0,0,FW_DONTCARE,
 	                     FALSE,FALSE,FALSE,
 						 DEFAULT_CHARSET,
 						 OUT_TT_ONLY_PRECIS,CLIP_DEFAULT_PRECIS,
@@ -113,6 +119,7 @@ void paint_main(HWND hwnd,pos_rate food,pos_rate me,pos_rate enemy,double mark){
 	RECT rt,rt_blood;
 	HDC hdc = GetDC(hwnd);
 	wchar_t str[1024];
+	mark=efficve_mark(mark);
 	swprintf(str,1024,L"%.3lg%%",mark*100);
 	GetClientRect(hwnd,&rt);
 	rt_blood=(RECT){.left=0,.top=0,
@@ -120,7 +127,7 @@ void paint_main(HWND hwnd,pos_rate food,pos_rate me,pos_rate enemy,double mark){
 	paint_rect(hdc,rt,color_background);
 	paint_rect(hdc,rt_blood,color_blood);
 	paint_text(hdc,rt_blood,str,color_text_blood,color_text_blood_background,
-			   DT_SINGLELINE|DT_VCENTER|DT_CENTER|DT_NOCLIP);
+			   DT_SINGLELINE|DT_VCENTER|DT_CENTER|DT_NOCLIP,0);
 	paint_rect(hdc,torect_pos_rate(food,rt),color_food);
 	paint_rect(hdc,torect_pos_rate(me,rt),color_me);
 	paint_rect(hdc,torect_pos_rate(enemy,rt),color_enemy);
@@ -130,8 +137,9 @@ void paint_main(HWND hwnd,pos_rate food,pos_rate me,pos_rate enemy,double mark){
 void paint_welcome_info(HDC hdc,pos_rate p,RECT rt,wchar_t * info_text,COLORREF color_info){
 	RECT t=torect_pos_rate(p,rt);
 	paint_rect(hdc,t,color_info);
-	paint_text(hdc,(RECT){.left=t.right,.top=t.top,.right=t.right,.bottom=t.bottom},
-	           info_text,color_text_info,color_background,DT_LEFT|DT_SINGLELINE|DT_VCENTER|DT_NOCLIP);
+	paint_text(hdc,(RECT){.left=t.right,.top=t.top,.right=rt.right,.bottom=t.bottom},
+	           info_text,color_text_info,color_background,DT_LEFT|DT_SINGLELINE|DT_VCENTER|DT_NOCLIP,
+			   info_max_length);
 	return;
 }
 void paint_welcome(HWND hwnd){
@@ -139,9 +147,9 @@ void paint_welcome(HWND hwnd){
 	HDC hdc = GetDC(hwnd);
 	GetClientRect(hwnd,&rt);
 	paint_rect(hdc,rt,color_background);
-	paint_welcome_info(hdc,(pos_rate){.x_rate=0.1,.y_rate=0.5-vertical_spacing_info},rt,info_food,color_food);
-	paint_welcome_info(hdc,(pos_rate){.x_rate=0.1,.y_rate=0.5},rt,info_me,color_me);
-	paint_welcome_info(hdc,(pos_rate){.x_rate=0.1,.y_rate=0.5+vertical_spacing_info},rt,info_enemy,color_enemy);
+	paint_welcome_info(hdc,(pos_rate){.x_rate=info_x_rate,.y_rate=info_y_rate-vertical_spacing_info},rt,info_food,color_food);
+	paint_welcome_info(hdc,(pos_rate){.x_rate=info_x_rate,.y_rate=info_y_rate},rt,info_me,color_me);
+	paint_welcome_info(hdc,(pos_rate){.x_rate=info_x_rate,.y_rate=info_y_rate+vertical_spacing_info},rt,info_enemy,color_enemy);
 	ReleaseDC(hwnd,hdc);
 }
 void paint_win(HWND hwnd){
@@ -151,7 +159,8 @@ void paint_win(HWND hwnd){
 	paint_rect(hdc,rt,color_background);
 	paint_text(hdc,(RECT){.left=rt.left,.top=(rt.bottom-rt.top)*0.3,
 		            	  .right=rt.right,.bottom=(rt.bottom-rt.top)*0.7},
-			   info_win,color_text_info,color_background,DT_SINGLELINE|DT_VCENTER|DT_CENTER|DT_NOCLIP);
+			   info_win,color_text_info,color_background,DT_SINGLELINE|DT_VCENTER|DT_CENTER|DT_NOCLIP,
+			   20);
 	ReleaseDC(hwnd,hdc);
 	Sleep(exit_pause_ms);
 }
@@ -162,11 +171,13 @@ void paint_lose(HWND hwnd){
 	paint_rect(hdc,rt,color_background);
 		paint_text(hdc,(RECT){.left=rt.left,.top=(rt.bottom-rt.top)*0.3,
 		            	  .right=rt.right,.bottom=(rt.bottom-rt.top)*0.7},
-			   info_lose,color_text_info,color_background,DT_SINGLELINE|DT_VCENTER|DT_CENTER|DT_NOCLIP);
+			      info_lose,color_text_info,color_background,DT_SINGLELINE|DT_VCENTER|DT_CENTER|DT_NOCLIP,
+			      24);
 	ReleaseDC(hwnd,hdc);
 	Sleep(exit_pause_ms);
 }
 void try_exit(HWND hwnd,double mark){
+	mark=efficve_mark(mark);
 	if(mark==0){
 		paint_lose(hwnd);
 		DestroyWindow(hwnd);
@@ -214,6 +225,7 @@ case WM_SIZE:{
 	break;
 }
 case WM_KEYDOWN:{
+	is_boot=0;
 	switch(wp){
 		case VK_UP:{
 			me.y_rate=efficve_xy_rate(me.y_rate-me_mov_rate);
@@ -235,8 +247,19 @@ case WM_KEYDOWN:{
 			/*PASS*/
 			break;
 		}
+	} 
+	if(!is_overlap_pos_rate(food,me)){
+		double x=efficve_xy_rate(food.x_rate-sgn(food.x_rate-enemy.x_rate)*food_mov_rate);
+		double y=efficve_xy_rate(food.y_rate-sgn(food.y_rate-enemy.y_rate)*food_mov_rate);
+		if(distance_pos_rate((pos_rate){x,food.y_rate},enemy)<
+		   distance_pos_rate((pos_rate){food.x_rate,y},enemy)){
+		food.x_rate=x;
+		}else{
+		food.y_rate=y; 
+		}
+	}else{
+		/*Pass*/
 	}
-	is_boot=0; 
 	if(!is_overlap_pos_rate(me,enemy)){
 		double x=efficve_xy_rate(enemy.x_rate+sgn(me.x_rate-enemy.x_rate)*enemy_mov_rate);
 		double y=efficve_xy_rate(enemy.y_rate+sgn(me.y_rate-enemy.y_rate)*enemy_mov_rate);
@@ -251,7 +274,7 @@ case WM_KEYDOWN:{
 	}
 	paint_main(hwnd,food,me,enemy,mark);
 	if(is_overlap_pos_rate(food,me)){
-		mark=efficve_mark(mark+base_mark);
+		mark=mark+base_mark;
 		while(is_overlap_pos_rate(food,me)||is_overlap_pos_rate(food,enemy)){
 			food=rand_pos_rate();
 		}
@@ -259,7 +282,7 @@ case WM_KEYDOWN:{
 		/*Pass*/
 	}
 	if(is_overlap_pos_rate(me,enemy)){
-		mark=efficve_mark(mark-base_mark);
+		mark=mark-base_mark;
 		while(is_overlap_pos_rate(me,enemy)||is_overlap_pos_rate(food,enemy)){
 			enemy=rand_pos_rate();
 		}
