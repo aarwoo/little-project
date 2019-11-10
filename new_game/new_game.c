@@ -1,3 +1,4 @@
+/*Just For Windows*/
 #ifndef UNICODE
 #define UNICODE
 #endif
