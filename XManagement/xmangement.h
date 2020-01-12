@@ -61,7 +61,7 @@ xmangement* append_xmangement(xmangement* xm,uchar** vals,size_t vals_counts,siz
       for(size_t i=0;i<vals_counts&&mark==true;i=i+1){
         mark=mark&&(ustrcmp(*(vals+i),*(tmp->vals+i))==0);
       }
-      if(mark==true){
+      if(mark==true&&tmp!=vm){
         return xm;
       }else{
         /*PASS*/
