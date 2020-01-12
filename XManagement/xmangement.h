@@ -49,7 +49,7 @@ xmangement* new_xmangement(uchar** keys,size_t keys_counts,size_t each_key_max_l
   }
   return ret;
 }
-xmangement* join_xmangement(xmangement* xm,uchar** vals,size_t vals_counts,size_t each_val_max_len){
+xmangement* append_xmangement(xmangement* xm,uchar** vals,size_t vals_counts,size_t each_val_max_len){
   if(xm==NULL){
     return NULL;
   }else if(xm->vals_counts==vals_counts){
@@ -69,26 +69,59 @@ uchar* view_xmangement(xmangement* xm,size_t pos,uchar* key){
   }else{
     for(size_t i=0;i<xm->vals_counts;i=i+1){
       if(ustrcmp(*(xm->vals+i),key)==0){
-        while(pos!=0&&xm->next!=NULL){
-          xm=xm->next;
-          pos=pos-1;
-        }
+        pos=pos+1;
         if(pos==0){
-          uchar * ret;
-          size_t len=ustrnlen(*(xm->vals+i),SIZE_MAX);
-          ret=(uchar *)calloc(len+1,sizeof(uchar));
-          if(ret==NULL){
-            return NULL;
-          }else{
-            ustrcpy(ret,len+1,*(xm->vals+i));
-            return ret;
-          }
-        }else{
           return NULL;
+        }else{
+          while(pos!=0&&xm->next!=NULL){
+            xm=xm->next;
+            pos=pos-1;
+          }
+          if(pos==0){
+            uchar * ret;
+            size_t len=ustrnlen(*(xm->vals+i),SIZE_MAX);
+            ret=(uchar *)calloc(len+1,sizeof(uchar));
+            if(ret==NULL){
+              return NULL;
+            }else{
+              ustrcpy(ret,len+1,*(xm->vals+i));
+              return ret;
+            }
+          }else{
+            return NULL;
+          }
+        }
       }else{
         /*PASS*/
       }
     }
     return NULL;
+  }
+}
+xmangement* remove_xmangement(xmangement * xm,size_t pos){
+  xmangement* tmp;
+  xmangement* del;
+  tmp=xm;
+  pos=pos+1;
+  if(pos==0){
+    return xm;
+  }else{
+    while(pos!=1&&tmp->next!=NULL){
+      tmp=tmp->next;
+      pos=pos-1;
+    }
+    if(pos==1){
+      del=tmp->next;
+      if(del!=NULL){
+        tmp->next=del->next;
+        del->next=NULL;
+        delete_xmangement(del);
+        return xm;
+      }else{
+        return xm;
+      }
+    }else{
+      return xm;
+    }
   }
 }
