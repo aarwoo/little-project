@@ -1,3 +1,4 @@
+#include<stdbool.h>
 #include<stdlib.h>
 #include"ustr.h"
 typedef struct{
@@ -54,8 +55,17 @@ xmangement* append_xmangement(xmangement* xm,uchar** vals,size_t vals_counts,siz
     return NULL;
   }else if(xm->vals_counts==vals_counts){
     xmangement* tmp;
+    bool mark;
     for(tmp=xm;tmp->next!=NULL;tmp=tmp->next){
-      /*PASS*/
+      mark=true;
+      for(size_t i=0;i<vals_counts&&mark==true;i=i+1){
+        mark=mark&&(ustrcmp(*(vals+i),*(tmp->vals+i))==0);
+      }
+      if(mark==true){
+        return xm;
+      }else{
+        /*PASS*/
+      }
     }
     tmp->next=new_xmangement(vals,vals_counts,each_val_max_len);
     return xm;
@@ -98,7 +108,7 @@ uchar* view_xmangement(xmangement* xm,size_t pos,uchar* key){
     return NULL;
   }
 }
-xmangement* remove_xmangement(xmangement * xm,size_t pos){
+xmangement* remove_xmangement(xmangement* xm,size_t pos){
   xmangement* tmp;
   xmangement* del;
   tmp=xm;
