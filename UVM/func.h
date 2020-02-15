@@ -20,6 +20,8 @@ class func{
         return above->look_up_space(key);
       }else{
         return space[func];
+      }
+    }
     func calc(){
       if(expr.size()==0){
          if(obj[0]=="$"){
@@ -35,5 +37,24 @@ class func{
          }else{
            return look_up_space(obj);
          }
-           
+      }else{
+        if(obj[0]=="$"){
+          return *this;
+        }else if(obj[0]=="#"){
+          func tmp;
+          tmp=*this;
+          tmp.obj="";
+          return tmp;
+        }else if(obj==""){
+          func tmp;
+          tmp=expr[0].calc();
+          for(size_t i=1;i<expr.size();i=i+1){
+            tmp=tmp.apply(expr[i].calc()).calc();
+          }
+          return tmp;
+        }else{
+          return *this;
+        }
+      }
+    }
 };
