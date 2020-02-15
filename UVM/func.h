@@ -35,7 +35,7 @@ class func{
          }else if(obj[0]=="\""||obj[0]=="+"){
            return *this;
          }else{
-           return look_up_space(obj);
+           return look_up_space(obj).calc();
          }
       }else{
         if(obj[0]=="$"){
