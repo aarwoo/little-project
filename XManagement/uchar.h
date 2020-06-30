@@ -7,11 +7,11 @@ typedef wchar_t uchar;
 #include<wchar.h>
 #define ustrnlen_s wcsnlen_s
 #define ustrcpy_s wcscpy_s
-#defie ustrcmp wcscmp
+#define ustrcmp wcscmp
 #else
 typedef char uchar;
 #include<string.h>
 #define ustrnlen_s strnlen_s
 #define ustrcpy_s strcpy_s
-#defie ustrcmp strcmp
+#define ustrcmp strcmp
 #endif
