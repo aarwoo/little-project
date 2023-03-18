@@ -1,26 +1,12 @@
 #include<string>
 #include<vector>
-class expr;
-class __expr{
-  public:
-    virtual __expr();
-    virtual ~__expr();
-    virtual std::string type();
-    virtual std::string tostr();
-    virtual __expr* toexpr(std::string token);
-    virtual expr apply(expr arg,std::map<std::string,expr > env);
-};
+#include<variant>
+#include <utility>
 class expr{
   private:
-    __expr * e;
-  public:
-    expr(){e=new __expr;}
-    ~expr(){delete e;}
-    std::string type(){
-      return e->type();
-    }
-    expr toexpr(std::string token){
-      
-    }
-    expr apply(expr arg,std::map<std::string,expr > env);
+  std::variant<std::vector<expr>, //call list (F arg1 arg2 ...)
+               std::pair<std::vector<std::string>,std::vector<expr> >, // func def (var1 var2 ...)->expr
+               std::pair<std::string,std::vector<expr> >, // var and it's val
+               std::string, //value below
+               long double> ex;
 };
