@@ -99,7 +99,7 @@ class _err: public __object{
       if(tmp!=nullptr){
         if(_operator=="+"){
           return (new _err)->setval(this->val+"\n\n"+tmp->val);
-        }else if(_ooperator=="="){
+        }else if(_operator=="="){
           return (new _bool)->setval(this->val==tmp->val);
         }else{
           return this->calc("+",tmp)->calc("+",(new _err)->setval(this->type()+_operator+tmp->type()+" is underfined.");
