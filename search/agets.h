@@ -7,8 +7,8 @@ Or else,you will meet the Bug.*/
 char * _agets(FILE * src,char * str,size_t size,int ch,char * tmp){
 	ch=fgetc(src);
 	tmp=realloc(str,(size+1)*sizeof(char));
-	if(tmp==NULL){
-		free(str);
+	if(tmp==NULL){// Seems C23 introduce the keyword nullptr,this would be outdate
+		free(str);//This code may invaild in C23
 		return NULL;
 	}else if(((char)ch)=='\n'||ch==EOF){
 		*(tmp+size)='\0';
